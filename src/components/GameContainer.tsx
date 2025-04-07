@@ -89,18 +89,13 @@ const GameContainer = ({ maxRange = 1000 }: GameContainerProps) => {
     let soundUrl = "";
 
     if (isCorrect) {
-      // Cock-a-doodle-doo for correct answer
-      soundUrl =
-        "https://assets.mixkit.co/active_storage/sfx/2522/2522-preview.mp3";
+      soundUrl = "/sounds/correct.mp3";
     } else if (proximityValue > 70) {
-      // Chasing chicken sound when close
-      soundUrl =
-        "https://assets.mixkit.co/active_storage/sfx/2518/2518-preview.mp3";
+      soundUrl = "/sounds/close.mp3";
     } else {
-      // Normal chicken sound when far
-      soundUrl =
-        "https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3";
+      soundUrl = "/sounds/far.mp3";
     }
+    
 
     // Play the selected sound
     const audio = new Audio(soundUrl);
