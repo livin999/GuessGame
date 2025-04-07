@@ -14,7 +14,7 @@ import GameContainer from "./GameContainer";
 
 export default function Home() {
   const [showInstructions, setShowInstructions] = useState(false);
-  const [selectedRange, setSelectedRange] = useState<number>(1000);
+  const [selectedRange, setSelectedRange] = useState<number>(10);
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-slate-100 to-slate-200 flex flex-col items-center justify-center p-4">
