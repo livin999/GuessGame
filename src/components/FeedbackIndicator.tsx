@@ -16,9 +16,16 @@ const FeedbackIndicator = ({
   const getColor = () => {
     if (guessResult === "correct") return "bg-green-500";
 
-    // Calculate color gradient from red (cold) to green (hot)
-    const red = Math.round(255 - (255 * proximity) / 100);
-    const green = Math.round((255 * proximity) / 100);
+    // Calculate color gradient with 10 transitions from red (cold) to green (hot)
+    const segment = Math.floor(proximity / 10); // Determine which of the 10 segments (0-9)
+
+    // Calculate the base colors for each segment
+    const redValues = [255, 255, 255, 255, 255, 230, 204, 153, 102, 51, 0];
+    const greenValues = [0, 51, 102, 153, 204, 230, 255, 255, 255, 255, 255];
+
+    const red = redValues[segment];
+    const green = greenValues[segment];
+
     return `rgb(${red}, ${green}, 0)`;
   };
 

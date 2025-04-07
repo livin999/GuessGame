@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -9,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import FeedbackIndicator from "./FeedbackIndicator";
+import GuessInput from "./GuessInput";
 
 interface GuessEntry {
   value: number;
@@ -23,7 +23,7 @@ interface GameContainerProps {
 
 const GameContainer = ({ maxRange = 1000 }: GameContainerProps) => {
   const [targetNumber, setTargetNumber] = useState<number>(0);
-  const [currentGuess, setCurrentGuess] = useState<string>("");
+  // Current guess is now managed in GuessInput component
   const [guessHistory, setGuessHistory] = useState<GuessEntry[]>([]);
   const [attempts, setAttempts] = useState<number>(0);
   const [gameWon, setGameWon] = useState<boolean>(false);
@@ -66,7 +66,6 @@ const GameContainer = ({ maxRange = 1000 }: GameContainerProps) => {
   const startNewGame = () => {
     const newTarget = Math.floor(Math.random() * maxRange) + 1;
     setTargetNumber(newTarget);
-    setCurrentGuess("");
     setGuessHistory([]);
     setAttempts(0);
     setGameWon(false);
@@ -95,7 +94,6 @@ const GameContainer = ({ maxRange = 1000 }: GameContainerProps) => {
     } else {
       soundUrl = "/sounds/far.mp3";
     }
-    
 
     // Play the selected sound
     const audio = new Audio(soundUrl);
@@ -114,19 +112,7 @@ const GameContainer = ({ maxRange = 1000 }: GameContainerProps) => {
     };
   };
 
-  const handleGuessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentGuess(e.target.value);
-    setError("");
-  };
-
-  const handleSubmitGuess = () => {
-    // Validate input
-    const guessNumber = parseInt(currentGuess, 10);
-    if (isNaN(guessNumber) || guessNumber < 1 || guessNumber > maxRange) {
-      setError(`Please enter a valid number between 1 and ${maxRange}`);
-      return;
-    }
-
+  const handleSubmitGuess = (guessNumber: number) => {
     // Increment attempts
     setAttempts((prev) => prev + 1);
 
@@ -152,9 +138,6 @@ const GameContainer = ({ maxRange = 1000 }: GameContainerProps) => {
     // Check for win condition
     if (isCorrect) {
       setGameWon(true);
-    } else {
-      // Clear input for next guess
-      setCurrentGuess("");
     }
   };
 
@@ -175,27 +158,13 @@ const GameContainer = ({ maxRange = 1000 }: GameContainerProps) => {
         </div>
 
         {!gameWon && (
-          <div className="flex space-x-2">
-            <Input
-              type="number"
-              placeholder="Enter your guess"
-              value={currentGuess}
-              onChange={handleGuessChange}
-              min={1}
-              max={maxRange}
-              disabled={isPlaying || gameWon}
-              className="flex-1"
-            />
-            <Button
-              onClick={handleSubmitGuess}
-              disabled={isPlaying || gameWon || !currentGuess}
-            >
-              {isPlaying ? "Playing..." : "Submit"}
-            </Button>
-          </div>
+          <GuessInput
+            maxRange={maxRange}
+            onSubmitGuess={handleSubmitGuess}
+            isPlaying={isPlaying}
+            gameWon={gameWon}
+          />
         )}
-
-        {error && <div className="text-destructive text-sm">{error}</div>}
 
         {attempts > 0 && (
           <FeedbackIndicator
